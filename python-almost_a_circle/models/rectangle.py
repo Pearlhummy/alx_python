@@ -107,14 +107,13 @@ class Rectangle(Base):
     def display(self):
         """print() representation of a Rectangle."""
         space = ""
-        for _ in range(self.__height):
-            for _ in range(self.__width):
-                if _ == 0:
-                    print(self.__x*space,"#", end="")
-                elif _ == self.__width - 1:
-                    print("#",self.__y*space, end="")
-                else:
-                    print("#", end="")
+        for i in range(self.__height):
+            if i == 0:
+                for k in range(self.__y):
+                    print()
+            print("#".rjust(self.__x + 1), end="")
+            for j in range(self.__width - 1):
+                print("#", end="")
             print()
 
     def __str__(self):
@@ -123,3 +122,30 @@ class Rectangle(Base):
         string += " {}/{}".format(self.__x, self.__y)
         string += " - {}/{}".format(self.__width, self.__height)
         return string
+
+    def update(self, *args, **kwargs):
+        """assigns an argument to each attribute."""
+        if args is not None and len(args) > 0:
+            try:
+                self.id = args[0]
+            except IndexError:
+                pass
+            try:
+                self.__width = args[1]
+            except IndexError:
+                pass
+            try:
+                self.__height = args[2]
+            except IndexError:
+                pass
+            try:
+                self.__x = args[3]
+            except IndexError:
+                pass
+            try:
+                self.__y = args[4]
+            except IndexError:
+                pass
+        else:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
