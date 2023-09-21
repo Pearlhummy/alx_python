@@ -1,46 +1,44 @@
-#!/usr/bin/env python3
 import sys
 import MySQLdb
 
 
 def main():
-    if len(sys.argv) != 5:
-        print("Usage: {} <username> <password> <database> <state_name>".format(
-            sys.argv[0]))
-        sys.exit(1)
-
     username = sys.argv[1]
     password = sys.argv[2]
     database = sys.argv[3]
-    state_name = sys.argv[4]
+    state = sys.argv[4]
+
+    connection_params = {
+        "host": "localhost",
+        "user": username,
+        "passwd": password,
+        "db": database,
+        "port": 3306,
+    }
 
     try:
-        # Connect to MySQL server
-        db = MySQLdb.connect(host="localhost", port=3306,
-                             user=username, passwd=password, db=database)
+        db = MySQLdb.connect(**connection_params)
+        cur = db.cursor()
 
-        # Create a cursor
-        cursor = db.cursor()
+        query = (
+            "SELECT * FROM states WHERE BINARY name LIKE"
+            "'{}' ORDER BY states.id ASC"
+        ).format(state)
 
-        # script that takes in the name of a state as an argumant and lists all 
-        # cities of that state
-        query ="SELECT cities.name FROM cities JOIN states ON cities.state_id \
-            = states.id WHERE BINARY states.name = %s ORDER BY cities.id ASC"
+        cur.execute(query)
 
-        # Execute the SQL query with the state name
-        cursor.execute(query, (state_name,))
-        # Fetch all the rows
-        rows = cursor.fetchall()
-        # Display the results
-        print(", ".join([row[0] for row in rows]))
+        rows = cur.fetchall()
+
+        for row in rows:
+            print(row)
 
     except MySQLdb.Error as e:
-        print("Error connecting to the database:", e)
+        print("Error:", e)
     finally:
-        # Close the database connection
+        if cur:
+            cur.close()
         if db:
             db.close()
-
 
 if __name__ == "__main__":
     main()
