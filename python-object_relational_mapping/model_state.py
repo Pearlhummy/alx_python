@@ -1,7 +1,3 @@
-#!/usr/bin/python3
-"""
-Defines the State class and creates a new instance of Base class
-"""
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -9,8 +5,16 @@ Base = declarative_base()
 
 
 class State(Base):
-    """Defines the State class"""
-    __tablename__ = 'states'
+    """
+     Maps to the 'states' table.
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    Attributes:
+        id (int): The unique identifier for the state.
+        name (str): The name of the state.
+
+    Args:
+        Base (DeclarativeMeta): The base class.
+        """
+    __tablename__ = 'states'
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(128), nullable=False)
